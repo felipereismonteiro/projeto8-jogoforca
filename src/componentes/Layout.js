@@ -1,5 +1,4 @@
-import ImgForca from "./ImgForca"
-
+import forca0 from "../assets/forca0.png"
 import forca1 from "../assets/forca1.png"
 import forca2 from "../assets/forca2.png"
 import forca3 from "../assets/forca3.png"
@@ -44,20 +43,22 @@ export default function Layout() {
         <>
             <div className="container">
                 <div className="forca">
-                        <ImgForca contadorErro="" />
+
+                    <img src={forca0} alt="forca" />
+
                     <div className="escolherPalavra">
                         <button className="escolherPalavraP">
                             Escolher palavra
                         </button>
 
                         <div className="palavra">
-                            <h1>_ _ _ _ _ _ _ _ _ _</h1>
+                            <h4>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _</h4>
                         </div>
                     </div>
                 </div>
 
                 <div className="alfabeto">
-                    {alfabeto.map((l) => <button className="alfabetoButtonEnable">{l}</button> )}
+                    {alfabeto.map((l, index) => <button key={index} className="alfabetoButtonDisable">{l}</button> )}
                 </div>
 
                 <div className="jaSei">
