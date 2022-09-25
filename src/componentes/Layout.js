@@ -1,14 +1,6 @@
 import palavra from "./palavras"
 import React from "react"
 
-import forca0 from "../assets/forca0.png"
-import forca1 from "../assets/forca1.png"
-import forca2 from "../assets/forca2.png"
-import forca3 from "../assets/forca3.png"
-import forca4 from "../assets/forca4.png"
-import forca5 from "../assets/forca5.png"
-import forca6 from "../assets/forca6.png"
-
 
 export default function Layout() {
     const alfabeto = [
@@ -16,12 +8,16 @@ export default function Layout() {
         "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u",
         "v", "w", "x", "y", "z"]
 
+    let image = "";
+
     const [jogoIniciado, setJogoIniciado] = React.useState(false)
     const [palavraSorteada, setPalavraSorteada] = React.useState([])
     const [letraEscolhida, setLetraEscolhida] = React.useState([])
 
     let [contadorErros, setContadorErros] = React.useState(0)
     let [contadorAcertos, setContadorAcertos] = React.useState(0)
+
+    const [imagem, setImagem] = React.useState(<img src={`./assets/forca${contadorErros}.png`} alt="forca" />)
 
     const [chute, setChute] = React.useState("")
 
@@ -44,14 +40,12 @@ export default function Layout() {
             console.log([letra, ...letraEscolhida])
         }
         if(palavraSorteada.includes(letra)) {
-            setContadorErros(contadorErros += 1)
-        } else {
             setContadorAcertos(contadorAcertos += 1)
+        } else {
+            setContadorErros(contadorErros += 1)
+            setImagem(<img src={`./assets/forca${contadorErros}.png`} alt="forca" />)
         }
     }
-
-    console.log(contadorErros)
-    console.log(contadorAcertos)
 
     function chutou() {
         console.log(chute)
@@ -61,15 +55,12 @@ export default function Layout() {
         <>
             <div className="container">
                 <div className="forca">
-
-                    <img src={forca0} alt="forca" />
-
+                    {imagem}
                     <div className="escolherPalavra">
                         <button onClick={inciarJogo} disabled={jogoIniciado} className="escolherPalavraP">
                             Escolher palavra
                         </button>
-
-                        <div className={jogoIniciado === false ? "hidden" : "jogoIniciado"}>
+                        <div className={jogoIniciado === false ? "hidden" : `jogoIniciado ${image}`}>
                             {palavraSorteada.map((i, index) => letraEscolhida.includes(palavraSorteada[index]) ? i : " _ ")}
                         </div>
                     </div>
