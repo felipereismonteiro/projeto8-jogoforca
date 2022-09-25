@@ -60,6 +60,11 @@
     color: rgb(73, 73, 73);
 }
 
+.jogoIniciado {
+    display: flex;
+    justify-content: space-between;
+}
+
 .jaSei {
     display: flex;
     width: 60%;
@@ -97,4 +102,8 @@
 
 h4 {
     margin-bottom: 5px;
+}
+
+.hidden {
+    display: none;
 }

@@ -1,3 +1,6 @@
+import palavra from "./palavras"
+import React from "react"
+
 import forca0 from "../assets/forca0.png"
 import forca1 from "../assets/forca1.png"
 import forca2 from "../assets/forca2.png"
@@ -13,31 +16,27 @@ export default function Layout() {
         "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u",
         "v", "w", "x", "y", "z"]
 
-    const palavras = [
-        "abacate", "abacaxi", "abelha", "abanador", "antologia", "amor", "aba", "abraço", "ábaco", "abrigo", "abrir",
-        "banana", "boi", "batata", "bacalhau", "bexiga", "bowl", "batedeira", "bisturi", "barreira", "banco",
-        "caixa", "chantilly", "comércio", "cachorro", "cuidado", "caneta", "carinho", "cupuaçu", "cabra", "cesto",
-        "dados", "dizer", "danone", "dente", "diário", "diamante", "diafragma", "detonar", "dia", "dromedário",
-        "elefante", "esmeralda", "espátula", "estômago", "esfinge", "esfera", "encontro", "ema", "escola", "economia",
-        "formiga", "fama", "festa", "fiador", "ferver", "flauta", "fichário", "figo", "fiapo", "fotografia",
-        "goiaba", "gelo", "grito", "gamão", "guria", "goleiro", "golfinho", "golfe", "girar", "glúten",
-        "helicóptero", "harmonia", "haste", "hectare", "hábito", "hepatite", "hiena", "hemisfério", "hidrante",
-        "igreja", "ícone", "importante", "ímpar", "idoso", "irado", "identidade", "idioma", "idade", "idiota",
-        "jantar", "jumento", "jambú", "jibóia", "jararaca", "janela", "jerimum", "jaula", "jabuti", "jaleco",
-        "laranja", "lua", "leão", "limão", "larápio", "luz", "lindo", "lacraia", "lactose", "laço", "lacrar",
-        "mamão", "manga", "morango", "mico", "matar", "mingau", "moqueca", "macacão", "mocassin", "maçaneta",
-        "nectarina", "nada", "navio", "namorado", "ninja", "natal", "narciso", "narina", "nádega", "nabo",
-        "ovo", "ostra", "obstetra", "oblíquo", "orangotango", "olhar", "óculos", "ortodoxo", "ouro", "ornamento",
-        "pato", "polvo", "povoar", "pólvora", "palhaço", "paróqia", "pano", "princesa", "pizza", "patroa",
-        "queijo", "quitanda", "quinta", "quantia", "quarentena", "quadrilha", "quaresma", "quartzo", "quebrar", "quarteirão",
-        "risada", "rio", "remar", "rato", "racional", "rainha", "radioatividade", "raiz", "raiva", "rachadura",
-        "salada", "salamandra", "sacola", "siri", "sábado", "safanão", "sabre", "sucarose", "sabedoria", "sacerdote",
-        "tatu", "tabacaria", "taberneiro", "tábua", "torrada", "três", "terço", "tamanho", "tatuagem", "trem",
-        "uva", "uísque", "união", "universo", "unanimidade", "ubuntu", "universidade", "urso", "uivar", "unir",
-        "vela", "valeta", "vacilo", "valor", "vagem", "vadiagem", "vaca", "valentia", "vidro", "valsa",
-        "xícara", "xadrez", "xilofone", "xarope", "xenofobia", "xereta", "xerife", "xaveco", "xixi", "xale",
-        "zebra", "zagueiro", "zero", "zoeira", "zodíaco", "zangão", "zepelim", "zinco", "zoológico", "zumbido"
-    ]
+    const [jogoIniciado, setJogoIniciado] = React.useState(false)
+    const [palavraSorteada, setpalavraSorteada] = React.useState([])
+    const [chute, setChute] = React.useState("")
+
+    function inciarJogo() {
+        setJogoIniciado(true)
+        palavra.sort(comparador)
+        setpalavraSorteada(...palavraSorteada, palavra[1].split(""))
+    }
+
+    function comparador() {
+        return Math.random() - 0.5;
+    }
+
+    function letraAlfabeto(letra) {
+        console.log(letra)
+    }
+
+    function chutou() {
+        console.log(chute)
+    }
 
     return (
         <>
@@ -47,24 +46,31 @@ export default function Layout() {
                     <img src={forca0} alt="forca" />
 
                     <div className="escolherPalavra">
-                        <button className="escolherPalavraP">
+                        <button onClick={inciarJogo} disabled={jogoIniciado} className="escolherPalavraP">
                             Escolher palavra
                         </button>
 
-                        <div className="palavra">
-                            <h4>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _</h4>
+                        <div className={jogoIniciado === false ? "hidden" : "jogoIniciado"}>
+                            {palavraSorteada.map((i, index) => <h4 key={index} >{i}</h4>)}
                         </div>
                     </div>
                 </div>
 
                 <div className="alfabeto">
-                    {alfabeto.map((l, index) => <button key={index} className="alfabetoButtonDisable">{l}</button> )}
+                    {alfabeto.map((letra, index) =>
+                        <button key={index}
+                            disabled={!jogoIniciado}
+                            onClick={() => letraAlfabeto(letra)}
+                            className={jogoIniciado === false
+                                ? "alfabetoButtonDisable"
+                                : "alfabetoButtonEnable"}
+                        >{letra}</button>)}
                 </div>
 
                 <div className="jaSei">
                     <p>Ja sei a palavra!</p>
-                    <input type="text" />
-                    <button className="chutar">chutar</button>
+                    <input onChange={e => setChute(e.target.value.toLowerCase())} type="text" />
+                    <button onClick={chutou} disabled={!jogoIniciado} className="chutar">chutar</button>
                 </div>
             </div>
         </>
