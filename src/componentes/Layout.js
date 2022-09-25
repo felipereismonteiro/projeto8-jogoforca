@@ -17,22 +17,41 @@ export default function Layout() {
         "v", "w", "x", "y", "z"]
 
     const [jogoIniciado, setJogoIniciado] = React.useState(false)
-    const [palavraSorteada, setpalavraSorteada] = React.useState([])
+    const [palavraSorteada, setPalavraSorteada] = React.useState([])
+    const [letraEscolhida, setLetraEscolhida] = React.useState([])
+
+    let [contadorErros, setContadorErros] = React.useState(0)
+    let [contadorAcertos, setContadorAcertos] = React.useState(0)
+
     const [chute, setChute] = React.useState("")
 
     function inciarJogo() {
         setJogoIniciado(true)
-        palavra.sort(comparador)
-        setpalavraSorteada(...palavraSorteada, palavra[1].split(""))
+        palavra.sort(sorteador)
+        setPalavraSorteada(...palavraSorteada, palavra[1].split(""))
+        console.log(...palavraSorteada, palavra[1].split(""))
     }
 
-    function comparador() {
+    function sorteador() {
         return Math.random() - 0.5;
     }
 
     function letraAlfabeto(letra) {
-        console.log(letra)
+        if (letraEscolhida.includes(letra)) {
+            return false;
+        } else {
+            setLetraEscolhida([...letraEscolhida, letra])
+            console.log([letra, ...letraEscolhida])
+        }
+        if(palavraSorteada.includes(letra)) {
+            setContadorErros(contadorErros += 1)
+        } else {
+            setContadorAcertos(contadorAcertos += 1)
+        }
     }
+
+    console.log(contadorErros)
+    console.log(contadorAcertos)
 
     function chutou() {
         console.log(chute)
@@ -51,7 +70,7 @@ export default function Layout() {
                         </button>
 
                         <div className={jogoIniciado === false ? "hidden" : "jogoIniciado"}>
-                            {palavraSorteada.map((i, index) => <h4 key={index} >{i}</h4>)}
+                            {palavraSorteada.map((i, index) => letraEscolhida.includes(palavraSorteada[index]) ? i : " _ ")}
                         </div>
                     </div>
                 </div>
