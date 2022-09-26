@@ -8,24 +8,47 @@ export default function Layout() {
         "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u",
         "v", "w", "x", "y", "z"]
 
-    let image = "";
-
     const [jogoIniciado, setJogoIniciado] = React.useState(false)
+    const [palavraIniciada, setPalavraIniciada] = React.useState(false)
+
     const [palavraSorteada, setPalavraSorteada] = React.useState([])
     const [letraEscolhida, setLetraEscolhida] = React.useState([])
+    const [palavraRevelada, setPalavraRevelada] = React.useState(null)
 
     let [contadorErros, setContadorErros] = React.useState(0)
     let [contadorAcertos, setContadorAcertos] = React.useState(0)
 
     const [imagem, setImagem] = React.useState(<img src={`./assets/forca${contadorErros}.png`} alt="forca" />)
-
+    const [acertouPrompt, setAcertouPrompt] = React.useState("")
     const [chute, setChute] = React.useState("")
 
+    const palavraRenderizada = palavraSorteada.map((i, index) => letraEscolhida.includes(palavraSorteada[index]) ? i : " _ ")
+
     function inciarJogo() {
+        resetandoJogo()
+
         setJogoIniciado(true)
         palavra.sort(sorteador)
         setPalavraSorteada(...palavraSorteada, palavra[1].split(""))
         console.log(...palavraSorteada, palavra[1].split(""))
+    }
+
+    function resetandoJogo() {
+        contadorErros = 0
+        contadorAcertos = 0
+        setContadorAcertos(0)
+        setContadorErros(0)
+
+        setChute("")
+
+        setImagem(<img src={`./assets/forca${contadorErros}.png`} alt="forca" />)
+
+        setAcertouPrompt("")
+        setPalavraRevelada(null)
+        setPalavraIniciada(true)
+
+        setLetraEscolhida([])
+
     }
 
     function sorteador() {
@@ -36,19 +59,61 @@ export default function Layout() {
         if (letraEscolhida.includes(letra)) {
             return false;
         } else {
+            switch (letra) {
+                case "a":
+                    return setLetraEscolhida([...letraEscolhida, "a", "á", "à", "â", "ã"])
+                case "c":
+                    return setLetraEscolhida([...letraEscolhida, "c", "ç"])
+            }
             setLetraEscolhida([...letraEscolhida, letra])
-            console.log([letra, ...letraEscolhida])
         }
-        if(palavraSorteada.includes(letra)) {
+        if (palavraSorteada.includes(letra)) {
             setContadorAcertos(contadorAcertos += 1)
         } else {
+            if(contadorErros === 5) {
+                usuarioPerdeu()
+            }
             setContadorErros(contadorErros += 1)
             setImagem(<img src={`./assets/forca${contadorErros}.png`} alt="forca" />)
         }
     }
 
     function chutou() {
-        console.log(chute)
+        const palavra = palavraSorteada.join("")
+        if (chute === palavra) {
+            usuarioGanhou()
+        } else {
+            usuarioPerdeu()
+        }
+    }
+
+    function usuarioGanhou() {
+        setJogoIniciado(false)
+        setPalavraSorteada([])
+        setPalavraRevelada([...palavraSorteada])
+
+        setContadorAcertos(0)
+        setContadorErros(0)
+
+        setAcertouPrompt("green")
+    }
+
+    function usuarioPerdeu() {
+        setJogoIniciado(false)
+        setPalavraSorteada([])
+        setPalavraRevelada([...palavraSorteada])
+
+        setContadorAcertos(0)
+        setContadorErros(0)
+
+        setAcertouPrompt("red")
+        setImagem(<img src={`./assets/forca6.png`} alt="forca" />)
+    }
+
+    if(jogoIniciado) {
+        if (palavraRenderizada.join("") === palavraSorteada.join("")) {
+            return usuarioGanhou()
+        }
     }
 
     return (
@@ -60,8 +125,9 @@ export default function Layout() {
                         <button onClick={inciarJogo} disabled={jogoIniciado} className="escolherPalavraP">
                             Escolher palavra
                         </button>
-                        <div className={jogoIniciado === false ? "hidden" : `jogoIniciado ${image}`}>
-                            {palavraSorteada.map((i, index) => letraEscolhida.includes(palavraSorteada[index]) ? i : " _ ")}
+                        <div className={palavraIniciada === false ? "hidden" : `jogoIniciado ${acertouPrompt}`}>
+                            {palavraRenderizada}
+                            {palavraRevelada !== null ? palavraRevelada.map((i) => i) : false}
                         </div>
                     </div>
                 </div>
